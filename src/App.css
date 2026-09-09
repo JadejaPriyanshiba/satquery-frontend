@@ -4343,3 +4343,272 @@ body {
         height: 5px;
     }
 }
+/* =========================================================
+   ANALYSIS TYPE SELECTOR - LIGHT MODE
+   Match the Data Source selector style
+   ========================================================= */
+
+.light-mode .analysis-type-wrapper {
+    background: transparent;
+}
+
+.light-mode .analysis-type-selector {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+/* Header */
+
+.light-mode .analysis-type-selector h2 {
+    color: #0f172a;
+}
+
+.light-mode .analysis-type-selector p {
+    color: #64748b;
+}
+
+/* Options container */
+
+.light-mode .analysis-type-options {
+    gap: 12px;
+}
+
+/* Individual options */
+
+.light-mode .analysis-type-option {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    color: #334155;
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+
+.light-mode .analysis-type-option:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+/* Selected option */
+
+.light-mode .analysis-type-option.selected,
+.light-mode .analysis-type-option.active {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
+}
+
+/* Option title */
+
+.light-mode .analysis-type-option h3 {
+    color: #0f172a;
+}
+
+/* Option description */
+
+.light-mode .analysis-type-option p {
+    color: #64748b;
+}
+
+/* Selected indicator */
+
+.light-mode .analysis-type-option.selected::after,
+.light-mode .analysis-type-option.active::after {
+    background: #334155;
+}
+
+
+/* =========================================================
+   ANALYZE BUTTON - LIGHT MODE
+   ========================================================= */
+
+.light-mode .analyze-btn {
+    background: #334155;
+    color: #ffffff;
+    border: 1px solid #334155;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+}
+
+.light-mode .analyze-btn:hover {
+    background: #1e293b;
+    border-color: #1e293b;
+    transform: translateY(-1px);
+}
+
+.light-mode .analyze-btn:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   DATA SOURCE + ANALYSIS TYPE VISUAL CONSISTENCY
+   ========================================================= */
+
+.light-mode .data-source-section,
+.light-mode .analysis-type-selector {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.light-mode .data-source-card,
+.light-mode .analysis-type-option {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.light-mode .data-source-card:hover,
+.light-mode .analysis-type-option:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.light-mode .data-source-selected {
+    background: #f8fafc !important;
+    border-color: #94a3b8 !important;
+}
+/* =========================================================
+   LIGHT MODE - ANALYSIS TYPE
+   Matches the "Choose your data" design
+   ========================================================= */
+
+.light-mode .analysis-type-card {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0;
+    color: #0f172a !important;
+
+    box-shadow: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.light-mode .analysis-type-card:hover {
+    background: #f1f5f9 !important;
+    border-color: #94a3b8;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.07);
+}
+
+
+/* Selected analysis card */
+
+.light-mode .analysis-type-selected {
+    background: #f0fdfa !important;
+    border-color: #0f766e !important;
+
+    box-shadow:
+        0 0 0 1px rgba(15, 118, 110, 0.10),
+        0 6px 16px rgba(15, 118, 110, 0.07);
+}
+
+.light-mode .analysis-type-selected:hover {
+    background: #ecfdf5 !important;
+    border-color: #0f766e !important;
+}
+
+
+/* Analysis icon */
+
+.light-mode .analysis-type-icon {
+    background: #e2e8f0;
+    color: #475569 !important;
+}
+
+.light-mode .analysis-type-card:hover .analysis-type-icon {
+    background: #dbeafe;
+    color: #334155 !important;
+}
+
+.light-mode .analysis-type-selected .analysis-type-icon {
+    background: #ccfbf1;
+    color: #0f766e !important;
+}
+
+
+/* Analysis title */
+
+.light-mode .analysis-type-content h3 {
+    color: #0f172a !important;
+}
+
+
+/* Analysis description */
+
+.light-mode .analysis-type-content p {
+    color: #64748b !important;
+}
+
+
+/* Bottom description */
+
+.light-mode .analysis-type-description {
+    color: #64748b !important;
+}
+
+.light-mode .analysis-type-selected .analysis-type-description {
+    color: #0f766e !important;
+}
+
+
+/* Number */
+
+.light-mode .analysis-type-number {
+    color: #94a3b8 !important;
+}
+
+
+/* =========================================================
+   LIGHT MODE - ANALYZE BUTTON
+   ========================================================= */
+
+.light-mode .analyze-btn {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+
+    border: 1px solid #cbd5e1;
+
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.light-mode .analyze-btn:hover:not(:disabled) {
+    background: #f1f5f9 !important;
+    border-color: #94a3b8;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.10);
+}
+
+.light-mode .analyze-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.light-mode .analyze-btn:disabled {
+    background: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    border-color: #cbd5e1;
+}
+
+
+/* Keep arrow visible */
+
+.light-mode .analyze-btn .analyze-arrow {
+    color: #334155 !important;
+}
