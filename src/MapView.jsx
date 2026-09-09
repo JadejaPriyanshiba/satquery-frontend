@@ -1,13 +1,23 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
+import {
+    MapContainer,
+    TileLayer,
+    Rectangle,
+    useMap,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "@geoman-io/leaflet-geoman-free";
 
-const DEMO_AOI = [72.82, 21.12, 72.9, 21.2];
+const DEMO_AOIS = {
+    Gujarat: [72.82, 21.12, 72.9, 21.2],
+    Delhi: [77.1, 28.55, 77.15, 28.6],
+    Kolkata: [88.2, 22.5, 88.3, 22.58],
+};
 
-function MapControls({ onAOIChange }) {
+function MapControls({ onAOIChange, selectedAOI }) {
     const map = useMap();
+    const rectangleRef = useRef(null);
 
     useEffect(() => {
         map.pm.addControls({
@@ -35,6 +45,7 @@ function MapControls({ onAOIChange }) {
             ];
 
             console.log("AOI BBOX:", bbox);
+
             onAOIChange(bbox);
         };
 
@@ -45,42 +56,76 @@ function MapControls({ onAOIChange }) {
         };
     }, [map, onAOIChange]);
 
+    useEffect(() => {
+        if (!selectedAOI) {
+            return;
+        }
+
+        const bounds = [
+            [selectedAOI[1], selectedAOI[0]],
+            [selectedAOI[3], selectedAOI[2]],
+        ];
+
+        map.fitBounds(bounds, {
+            padding: [40, 40],
+        });
+    }, [map, selectedAOI]);
+
     return null;
 }
 
 function MapView({ onAOIChange }) {
+    const [selectedAOI, setSelectedAOI] = useState(null);
 
-    const useDemoAOI = () => {
-        console.log("Using Demo AOI:", DEMO_AOI);
-        onAOIChange(DEMO_AOI);
+    const handleDemoAOI = (name) => {
+        const bbox = DEMO_AOIS[name];
+
+        console.log(`Using ${name} Demo AOI:`, bbox);
+
+        setSelectedAOI(bbox);
+        onAOIChange(bbox);
     };
 
     return (
         <div className="map-wrapper">
 
-            {/* Map Header */}
             <div className="map-header">
-
                 <div>
                     <h2>Area of Interest</h2>
-
                     <p>
                         Select an area on the map to analyze
                     </p>
                 </div>
 
-                <button
-                    className="demo-aoi-btn"
-                    onClick={useDemoAOI}
-                >
-                    Use Demo AOI
-                </button>
+                <div className="demo-aoi-group">
+                    <span className="demo-aoi-label">Demo AOI</span>
 
+                    <div className="demo-buttons">
+                        <button
+                            className="demo-aoi-btn"
+                            onClick={() => handleDemoAOI("Gujarat")}
+                        >
+                            Gujarat
+                        </button>
+
+                        <button
+                            className="demo-aoi-btn"
+                            onClick={() => handleDemoAOI("Delhi")}
+                        >
+                            Delhi
+                        </button>
+
+                        <button
+                            className="demo-aoi-btn"
+                            onClick={() => handleDemoAOI("Kolkata")}
+                        >
+                            Kolkata
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            {/* Map */}
             <div className="map-container">
-
                 <MapContainer
                     center={[21.16, 72.86]}
                     zoom={11}
@@ -93,17 +138,27 @@ function MapView({ onAOIChange }) {
 
                     <MapControls
                         onAOIChange={onAOIChange}
+                        selectedAOI={selectedAOI}
                     />
-                </MapContainer>
 
+                    {selectedAOI && (
+                        <Rectangle
+                            bounds={[
+                                [selectedAOI[1], selectedAOI[0]],
+                                [selectedAOI[3], selectedAOI[2]],
+                            ]}
+                            pathOptions={{
+                                weight: 3,
+                            }}
+                        />
+                    )}
+                </MapContainer>
             </div>
 
-            {/* Map Hint */}
             <div className="map-hint">
                 <span>▣</span>
                 Draw a rectangle to define your Area of Interest
             </div>
-
         </div>
     );
 }

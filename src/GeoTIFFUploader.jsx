@@ -10,19 +10,23 @@ function GeoTIFFUploader({ onUpload }) {
         const selectedFile = event.target.files[0];
 
         setError("");
+        setFile(null);
 
         if (!selectedFile) {
-            setFile(null);
             return;
         }
 
+        const fileName = selectedFile.name.toLowerCase();
+
         const isGeoTIFF =
-            selectedFile.name.toLowerCase().endsWith(".tif") ||
-            selectedFile.name.toLowerCase().endsWith(".tiff");
+            fileName.endsWith(".tif") ||
+            fileName.endsWith(".tiff");
 
         if (!isGeoTIFF) {
-            setFile(null);
-            setError("Please select a GeoTIFF file (.tif or .tiff).");
+            setError(
+                "Invalid file. Please select a GeoTIFF satellite image (.tif or .tiff)."
+            );
+            event.target.value = "";
             return;
         }
 
@@ -44,10 +48,12 @@ function GeoTIFFUploader({ onUpload }) {
             console.log("GEOTIFF UPLOADED:", result);
 
             onUpload(result);
-
         } catch (error) {
             console.error("GEOTIFF UPLOAD ERROR:", error);
-            setError(error.message);
+
+            setError(
+                error.message || "Failed to upload GeoTIFF file."
+            );
         } finally {
             setUploading(false);
         }
@@ -59,8 +65,9 @@ function GeoTIFFUploader({ onUpload }) {
             <div className="upload-header">
                 <div>
                     <h3>Upload GeoTIFF</h3>
+
                     <p>
-                        Upload satellite imagery for analysis
+                        Upload a GeoTIFF satellite image for analysis
                     </p>
                 </div>
 
@@ -70,22 +77,25 @@ function GeoTIFFUploader({ onUpload }) {
             </div>
 
             <label className="file-drop-area">
+
                 <div className="upload-icon">
                     ↑
                 </div>
 
                 <div className="upload-text">
+
                     <strong>
                         {file
                             ? file.name
-                            : "Choose a GeoTIFF file"}
+                            : "Choose a GeoTIFF satellite image"}
                     </strong>
 
                     <span>
                         {file
                             ? "File selected and ready to upload"
-                            : "Supported formats: .tif, .tiff"}
+                            : "Only .tif and .tiff files are supported"}
                     </span>
+
                 </div>
 
                 <span className="browse-btn">
@@ -94,22 +104,28 @@ function GeoTIFFUploader({ onUpload }) {
 
                 <input
                     type="file"
-                    accept=".tif,.tiff"
+                    accept=".tif,.tiff,image/tiff"
                     onChange={handleFileChange}
                     hidden
                 />
+
             </label>
 
             {file && (
                 <div className="selected-file">
+
                     <span>📄</span>
 
                     <div>
-                        <strong>{file.name}</strong>
+                        <strong>
+                            {file.name}
+                        </strong>
+
                         <small>
                             {(file.size / (1024 * 1024)).toFixed(2)} MB
                         </small>
                     </div>
+
                 </div>
             )}
 
@@ -128,6 +144,7 @@ function GeoTIFFUploader({ onUpload }) {
                     {error}
                 </p>
             )}
+
         </div>
     );
 }
