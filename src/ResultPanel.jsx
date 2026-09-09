@@ -1,4 +1,6 @@
 import { downloadReport } from "./services/api";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const API_URL = "http://127.0.0.1:8000";
 
@@ -41,11 +43,10 @@ function ResultPanel({ result, audit = [] }) {
                 </div>
 
                 <span
-                    className={`result-status ${
-                        result.status === "done"
+                    className={`result-status ${result.status === "done"
                             ? "result-status-done"
                             : "result-status-failed"
-                    }`}
+                        }`}
                 >
                     {result.status}
                 </span>
@@ -72,9 +73,11 @@ function ResultPanel({ result, audit = [] }) {
 
                 </div>
 
-                <p className="answer-text">
-                    {result.answer || "No answer available"}
-                </p>
+                <div className="answer-text">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {result.answer}
+                    </ReactMarkdown>
+                </div>
 
             </div>
 

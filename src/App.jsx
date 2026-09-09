@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import teamLogo from "./assets/team-logo.png";
 
 import MapView from "./MapView";
 import QueryPanel from "./QueryPanel";
@@ -48,7 +49,7 @@ function App() {
       <header className="navbar">
         <div className="brand">
           <div className="brand-icon">
-            🛰️
+            <img src={teamLogo} alt="Team Logo" />
           </div>
 
           <div className="brand-text">
