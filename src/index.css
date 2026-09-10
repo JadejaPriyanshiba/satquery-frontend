@@ -1,16 +1,57 @@
-* {
-  margin: 0;
-  padding: 0;
+@import "./styles/tokens.css";
+@import "./styles/shell.css";
+@import "./styles/panels.css";
+@import "./styles/viz.css";
+@import "./styles/map.css";
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fa;
-  color: #1f2937;
+html,
+body,
+#root {
+  height: 100%;
 }
 
-button,
-input {
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--ink-1);
+  background: var(--surface-2);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, p, figure, dl, dd {
+  margin: 0;
+}
+
+button {
   font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

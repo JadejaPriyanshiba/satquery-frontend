@@ -1,0 +1,376 @@
+/* ------------------------------------------------------------------ *
+ * Map-first shell.
+ *
+ * The map is the page. Everything else is a floating layer above it:
+ * `.hud` spans the viewport but is pointer-transparent, so only the
+ * docks inside it capture the mouse and the map stays draggable in the
+ * gaps between them.
+ * ------------------------------------------------------------------ */
+
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--ink-1);
+  background: var(--surface-2);
+}
+
+.map-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hud {
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  padding: 12px;
+}
+
+.hud > * {
+  pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------- *
+ * Top bar
+ * ---------------------------------------------------------------- */
+
+.topbar {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.topbar > * {
+  pointer-events: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 8px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-pill);
+}
+
+.brand img {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-text strong {
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.brand-text span {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 13px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 550;
+  color: var(--ink-1);
+  background: var(--surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-pill);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.pill:hover {
+  border-color: var(--hair-strong);
+}
+
+.pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pill[aria-pressed="true"],
+.pill.is-active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+
+.pill.is-static {
+  cursor: default;
+}
+
+.health-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  flex: none;
+}
+
+.health-dot.is-up { background: var(--status-good); }
+.health-dot.is-down { background: var(--status-critical); }
+.health-dot.is-checking {
+  background: var(--status-warning);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.35; }
+}
+
+/* ---------------------------------------------------------------- *
+ * Docks
+ * ---------------------------------------------------------------- */
+
+.dock {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--surface-glass);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-dock);
+  box-shadow: var(--shadow-dock);
+  overflow: hidden;
+}
+
+.dock-left {
+  grid-column: 1;
+  grid-row: 2;
+  width: 372px;
+}
+
+.dock-right {
+  grid-column: 3;
+  grid-row: 2;
+  width: 452px;
+}
+
+.dock-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--hair);
+  flex: none;
+}
+
+.dock-head h2 {
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+
+.dock-head p {
+  margin: 1px 0 0;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.dock-head-spacer { flex: 1; }
+
+.dock-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dock-body::-webkit-scrollbar { width: 10px; }
+.dock-body::-webkit-scrollbar-thumb {
+  background: var(--hair-strong);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+.dock-foot {
+  flex: none;
+  padding: 12px 14px;
+  border-top: 1px solid var(--hair);
+  background: var(--surface-1);
+}
+
+/* Collapsed docks shrink to a vertical tab clinging to the edge. */
+.dock-tab {
+  align-self: start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-1);
+  background: var(--surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-pill);
+  cursor: pointer;
+  writing-mode: vertical-rl;
+}
+
+.dock-tab-left { grid-column: 1; grid-row: 2; }
+.dock-tab-right { grid-column: 3; grid-row: 2; transform: rotate(180deg); }
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--hair);
+}
+
+/* ---------------------------------------------------------------- *
+ * Status rail (bottom)
+ * ---------------------------------------------------------------- */
+
+.status-rail {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+
+.status-rail > * { pointer-events: auto; }
+
+.readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 12px;
+  font-size: 11.5px;
+  color: var(--ink-2);
+  background: var(--surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-pill);
+  white-space: nowrap;
+}
+
+.readout strong {
+  color: var(--ink-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.readout-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--hair-strong);
+}
+
+/* ---------------------------------------------------------------- *
+ * Responsive — below 1180px the docks become stacked sheets, and the
+ * map keeps the top half of the screen.
+ * ---------------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  .dock-left { width: 340px; }
+  .dock-right { width: 380px; }
+}
+
+@media (max-width: 980px) {
+  .hud {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    padding: 8px;
+  }
+
+  .dock-left,
+  .dock-right {
+    grid-column: 1;
+    grid-row: 2;
+    width: auto;
+    max-height: 52vh;
+  }
+
+  .dock-right { align-self: end; }
+  .dock-left { align-self: end; }
+
+  /* With both open on a narrow screen, the map would vanish — the
+     shell keeps at most one sheet expanded at a time (see App). */
+  .dock-tab-left,
+  .dock-tab-right {
+    grid-column: 1;
+    grid-row: 3;
+    writing-mode: horizontal-tb;
+    transform: none;
+    justify-self: start;
+  }
+
+  .dock-tab-right { justify-self: end; }
+}

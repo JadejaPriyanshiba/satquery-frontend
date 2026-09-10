@@ -1,0 +1,703 @@
+/* ------------------------------------------------------------------ *
+ * Data-visualisation layer.
+ *
+ * Mark specs are fixed here so every chart in the app reads as one
+ * system: bars <= 24px thick with a 4px rounded data-end squared at the
+ * baseline, hairline solid gridlines, a 2px surface gap between
+ * touching fills, and text always in ink tokens rather than the series
+ * colour.
+ * ------------------------------------------------------------------ */
+
+.viz {
+  color: var(--ink-1);
+}
+
+.viz-title {
+  font-size: 12px;
+  font-weight: 620;
+  margin: 0 0 2px;
+}
+
+.viz-sub {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+/* ---- Stat tiles --------------------------------------------------- */
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 8px;
+}
+
+.stat-tile {
+  padding: 10px 11px;
+  background: var(--surface-1);
+  border: 1px solid var(--hair);
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 19px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.stat-value .stat-unit {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-left: 2px;
+}
+
+.stat-note {
+  margin-top: 3px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  line-height: 1.35;
+}
+
+.stat-tile.is-status .stat-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+/* Status colour never travels alone: every use pairs it with the glyph
+   and the label beside it. */
+.status-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border-radius: 50%;
+  font-size: 11px;
+  line-height: 1;
+  color: #fff;
+}
+
+.status-mark.tone-good { background: var(--status-good); }
+.status-mark.tone-warning { background: var(--status-warning); color: #1a1a19; }
+.status-mark.tone-serious { background: var(--status-serious); color: #1a1a19; }
+.status-mark.tone-critical { background: var(--status-critical); }
+.status-mark.tone-neutral { background: var(--ink-3); }
+
+/* ---- Hero figure -------------------------------------------------- */
+
+.hero-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 48px;
+  font-weight: 660;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.hero-figure .hero-unit {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: 0;
+}
+
+/* ---- Meter (single ratio against a limit) -------------------------- */
+
+.meter {
+  display: block;
+}
+
+.meter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.meter-name {
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+
+.meter-readout {
+  font-size: 11.5px;
+  font-weight: 620;
+  color: var(--ink-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.meter-track {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--track);
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.meter-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3px;
+  font-size: 9.5px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Horizontal bar chart ------------------------------------------ */
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px;
+}
+
+.bar-caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+}
+
+.bar-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-2);
+  min-width: 0;
+}
+
+.bar-row.is-winner .bar-name {
+  color: var(--ink-1);
+  font-weight: 620;
+}
+
+.bar-key {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 2px;
+}
+
+.bar-value {
+  color: var(--ink-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+/* The track is the plot area, not a second data mark — it stays a
+   hairline wash so only the fill carries value. */
+.bar-track {
+  position: relative;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  min-width: 2px;
+}
+
+.bar-fill.is-zero {
+  min-width: 0;
+}
+
+.bar-gridline {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--grid);
+}
+
+/* ---- Stacked contribution bar --------------------------------------- */
+
+.stack {
+  display: flex;
+  height: 22px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+
+/* 2px surface gap does the separating — never a stroke on the mark. */
+.stack-seg + .stack-seg {
+  border-left: 2px solid var(--surface-1);
+}
+
+.stack-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  font-size: 10.5px;
+  font-weight: 620;
+  transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.stack-seg:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.stack-seg-label {
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.stack-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-key {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 2px;
+}
+
+.legend-value {
+  color: var(--ink-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Radial gauge --------------------------------------------------- */
+
+.gauge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gauge svg {
+  flex: none;
+  display: block;
+}
+
+.gauge-track { stroke: var(--track); }
+
+.gauge-center {
+  font-family: var(--font);
+  font-weight: 660;
+  fill: var(--ink-1);
+}
+
+.gauge-center-sub {
+  font-family: var(--font);
+  font-size: 9px;
+  fill: var(--ink-3);
+}
+
+.gauge-copy {
+  min-width: 0;
+}
+
+.gauge-copy strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 620;
+  margin-bottom: 3px;
+}
+
+.gauge-copy p {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* ---- Pipeline (stage timeline) --------------------------------------- */
+
+.pipeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  column-gap: 10px;
+  position: relative;
+}
+
+.stage-rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.stage-node {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  font-size: 10.5px;
+  font-weight: 650;
+  color: var(--ink-3);
+  background: var(--surface-1);
+  box-shadow: inset 0 0 0 1.5px var(--axis);
+}
+
+.stage-line {
+  position: absolute;
+  top: 22px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--axis);
+}
+
+.stage.is-done .stage-node {
+  color: #fff;
+  background: var(--status-good);
+  box-shadow: none;
+}
+
+.stage.is-done .stage-line { background: var(--status-good); }
+
+.stage.is-active .stage-node {
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: none;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.stage.is-failed .stage-node {
+  color: #fff;
+  background: var(--status-critical);
+  box-shadow: none;
+}
+
+.stage.is-failed .stage-line { background: var(--status-critical); }
+
+.stage-body {
+  padding-bottom: 14px;
+  min-width: 0;
+}
+
+.stage-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stage-title strong {
+  font-size: 12px;
+  font-weight: 620;
+}
+
+.stage-state {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  flex: none;
+}
+
+.stage-desc {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+.stage-detail {
+  margin-top: 8px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+
+.stage-duration {
+  margin-top: 6px;
+}
+
+/* ---- Duration bars (audit) ------------------------------------------- */
+
+.duration-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.duration-row {
+  display: grid;
+  grid-template-columns: 78px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.duration-name {
+  color: var(--ink-2);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.duration-track {
+  height: 12px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+
+.duration-fill {
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  min-width: 2px;
+}
+
+.duration-value {
+  color: var(--ink-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Compare card (primary vs independent check) ---------------------- */
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.compare-col {
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  min-width: 0;
+}
+
+.compare-role {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+
+.compare-tool {
+  font-size: 12.5px;
+  font-weight: 620;
+  overflow-wrap: anywhere;
+}
+
+.compare-meta {
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+
+.compare-meter {
+  margin-top: 9px;
+}
+
+/* ---- Table view (the always-available fallback for every chart) ------- */
+
+.viz-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-top: 10px;
+}
+
+.viz-table th,
+.viz-table td {
+  padding: 5px 7px;
+  border-bottom: 1px solid var(--hair);
+  text-align: left;
+}
+
+.viz-table th {
+  font-weight: 600;
+  color: var(--ink-3);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.viz-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-toggle {
+  margin-top: 8px;
+  font: inherit;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.table-toggle:hover { color: var(--ink-1); }
+
+/* ---- Audit event cards ------------------------------------------------ */
+
+.audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.audit-card {
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-card);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+
+.audit-card-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--hair);
+}
+
+.audit-step-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border-radius: 7px;
+  font-size: 12px;
+  background: var(--surface-1);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+
+.audit-step-name {
+  font-size: 12px;
+  font-weight: 640;
+  text-transform: capitalize;
+}
+
+.audit-step-time {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+.audit-card-body {
+  padding: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.audit-summary {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Sparkline-ish scene strip ---------------------------------------- */
+
+.scene-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scene-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 11px;
+}
+
+.scene-kind {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex: none;
+  color: #fff;
+}
+
+.scene-name {
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}

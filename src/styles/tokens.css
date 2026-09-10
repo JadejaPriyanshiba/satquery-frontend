@@ -1,0 +1,156 @@
+/* ------------------------------------------------------------------ *
+ * Design tokens.
+ *
+ * Light is defined on bare :root; dark is redefined twice — once under
+ * prefers-color-scheme (OS setting) and once under [data-theme="dark"]
+ * (the in-app toggle), so the toggle wins in both directions.
+ *
+ * The `--series-*`, `--seq-*` and `--status-*` slots are the data-viz
+ * palette. Both modes were validated with the dataviz palette checker
+ * against the panel surfaces below; do not re-step one colour in
+ * isolation.
+ * ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces — floating panels sit over the map, so these are opaque
+     enough for charts to keep their measured contrast. */
+  --surface-1: #fcfcfb;
+  --surface-2: #f4f3f0;
+  --surface-3: #eceae5;
+  --surface-glass: rgba(252, 252, 251, 0.86);
+  --surface-scrim: rgba(255, 255, 255, 0.6);
+
+  /* Ink */
+  --ink-1: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #898781;
+
+  /* Chart chrome */
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --hair: rgba(11, 11, 11, 0.1);
+  --hair-strong: rgba(11, 11, 11, 0.18);
+  --deemph: #c3c2b7;
+  --track: #cde2fb;
+
+  /* Categorical slots (validated: worst adjacent CVD dE 9.2) */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+
+  /* Sequential blue ramp */
+  --seq-100: #cde2fb;
+  --seq-250: #86b6ef;
+  --seq-350: #5598e7;
+  --seq-450: #2a78d6;
+  --seq-550: #1c5cab;
+  --seq-650: #104281;
+
+  /* Status — fixed, never themed, never reused as a series colour */
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
+
+  --accent: #2a78d6;
+  --accent-ink: #ffffff;
+  --accent-wash: rgba(42, 120, 214, 0.1);
+
+  --shadow-dock: 0 1px 2px rgba(11, 11, 11, 0.06),
+                 0 12px 32px rgba(11, 11, 11, 0.14);
+  --shadow-pill: 0 1px 2px rgba(11, 11, 11, 0.08),
+                 0 6px 18px rgba(11, 11, 11, 0.12);
+
+  --radius-dock: 16px;
+  --radius-card: 12px;
+  --radius-pill: 999px;
+
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+
+    --surface-1: #171a1f;
+    --surface-2: #1e222a;
+    --surface-3: #262b34;
+    --surface-glass: rgba(23, 26, 31, 0.88);
+    --surface-scrim: rgba(10, 12, 15, 0.55);
+
+    --ink-1: #ffffff;
+    --ink-2: #c3c2b7;
+    --ink-3: #898781;
+
+    --grid: #2a2f38;
+    --axis: #39404b;
+    --hair: rgba(255, 255, 255, 0.1);
+    --hair-strong: rgba(255, 255, 255, 0.18);
+    --deemph: #4a515c;
+    --track: #16324f;
+
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+
+    --seq-100: #104281;
+    --seq-250: #1c5cab;
+    --seq-350: #256abf;
+    --seq-450: #3987e5;
+    --seq-550: #6da7ec;
+    --seq-650: #9ec5f4;
+
+    --accent: #3987e5;
+    --accent-ink: #ffffff;
+    --accent-wash: rgba(57, 135, 229, 0.16);
+
+    --shadow-dock: 0 1px 2px rgba(0, 0, 0, 0.4),
+                   0 16px 40px rgba(0, 0, 0, 0.5);
+    --shadow-pill: 0 1px 2px rgba(0, 0, 0, 0.4),
+                   0 8px 20px rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --surface-1: #171a1f;
+  --surface-2: #1e222a;
+  --surface-3: #262b34;
+  --surface-glass: rgba(23, 26, 31, 0.88);
+  --surface-scrim: rgba(10, 12, 15, 0.55);
+
+  --ink-1: #ffffff;
+  --ink-2: #c3c2b7;
+  --ink-3: #898781;
+
+  --grid: #2a2f38;
+  --axis: #39404b;
+  --hair: rgba(255, 255, 255, 0.1);
+  --hair-strong: rgba(255, 255, 255, 0.18);
+  --deemph: #4a515c;
+  --track: #16324f;
+
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+
+  --seq-100: #104281;
+  --seq-250: #1c5cab;
+  --seq-350: #256abf;
+  --seq-450: #3987e5;
+  --seq-550: #6da7ec;
+  --seq-650: #9ec5f4;
+
+  --accent: #3987e5;
+  --accent-ink: #ffffff;
+  --accent-wash: rgba(57, 135, 229, 0.16);
+
+  --shadow-dock: 0 1px 2px rgba(0, 0, 0, 0.4),
+                 0 16px 40px rgba(0, 0, 0, 0.5);
+  --shadow-pill: 0 1px 2px rgba(0, 0, 0, 0.4),
+                 0 8px 20px rgba(0, 0, 0, 0.45);
+}
