@@ -237,23 +237,12 @@ export function bboxExtent(bbox) {
   };
 }
 
-/**
- * The upload `info.bounds`, but only when they are actually lon/lat.
- *
- * `POST /upload` reports the raster's bounds in the file's **own** CRS.
- * For a UTM scene those are metres — a perfectly valid extent that is
- * nonsense as an `AOI.bbox` and would land the footprint somewhere in
- * the Gulf of Guinea if drawn. So the values are range-checked before
- * anything geographic is done with them, and a projected raster simply
- * reports no footprint rather than a confident wrong one.
- */
-export function geographicBounds(info) {
-  const bounds = info?.bounds;
+/** A bbox that is usable as lon/lat: four finite, ordered, in-range values. */
+function asLonLat(bbox) {
+  if (!Array.isArray(bbox) || bbox.length !== 4) return null;
+  if (!bbox.every((value) => Number.isFinite(value))) return null;
 
-  if (!Array.isArray(bounds) || bounds.length !== 4) return null;
-  if (!bounds.every((value) => Number.isFinite(value))) return null;
-
-  const [minLon, minLat, maxLon, maxLat] = bounds;
+  const [minLon, minLat, maxLon, maxLat] = bbox;
 
   const inRange =
     Math.abs(minLon) <= 180 &&
@@ -263,7 +252,31 @@ export function geographicBounds(info) {
 
   const ordered = minLon < maxLon && minLat < maxLat;
 
-  return inRange && ordered ? bounds : null;
+  return inRange && ordered ? bbox : null;
+}
+
+/**
+ * An uploaded raster's footprint in lon/lat, or null if it cannot be placed.
+ *
+ * `info.bounds` is in the file's **own** CRS — metres for a UTM scene,
+ * which drawn as degrees would land the footprint in the Gulf of Guinea.
+ * The backend therefore also reports `info.bounds_wgs84`, reprojected
+ * with rasterio (ADR-010), and that is what gets used.
+ *
+ * Against an older backend that predates that field, native bounds are
+ * trusted only when the file declares a geographic CRS — a range check
+ * alone is not enough, since a small projected raster can have
+ * coordinates that happen to fall inside ±180/±90.
+ */
+export function geographicBounds(info) {
+  if (!info) return null;
+
+  if ("bounds_wgs84" in info) {
+    return asLonLat(info.bounds_wgs84);
+  }
+
+  const geographic = /^(EPSG:4326|OGC:CRS84)$/i.test(info.crs ?? "");
+  return geographic ? asLonLat(info.bounds) : null;
 }
 
 export function formatBbox(bbox) {

@@ -1,14 +1,11 @@
 /**
  * GeoTIFF upload.
  *
- * `POST /upload` answers with `{ image_ref, info }`, where `info` carries
- * the raster profile and `info.bounds` in `AOI.bbox` *ordering*
- * (`[min, min, max, max]`) but in the file's own CRS. The previous UI
- * looked for that bbox at the top level of the response and, never
- * finding it, told the user the backend needed changing — it did not,
- * the bounds were one level in the whole time. They are still only
- * usable on the map when they are lon/lat, which `geographicBounds()`
- * decides.
+ * `POST /upload` answers with `{ image_ref, info }`. `info.bounds` is in
+ * the file's own CRS (metres for a UTM scene); `info.bounds_wgs84` is the
+ * same extent reprojected to lon/lat by the backend (ADR-010), and is
+ * what places the footprint on the map. `geographicBounds()` picks the
+ * right one.
  */
 
 import { useRef, useState } from "react";
@@ -83,6 +80,8 @@ export default function GeoTIFFUploader({ upload, onUploaded, onCleared }) {
 
   if (upload) {
     const info = upload.info ?? {};
+    const projected =
+      Boolean(info.crs) && !/^(EPSG:4326|OGC:CRS84)$/i.test(info.crs);
 
     return (
       <div className="field-group">
@@ -117,18 +116,36 @@ export default function GeoTIFFUploader({ upload, onUploaded, onCleared }) {
           <dd>
             {upload.bounds
               ? upload.bounds.map((value) => value.toFixed(4)).join(", ")
-              : info.bounds
-                ? info.bounds.map((value) => Math.round(value)).join(", ")
-                : "—"}
+              : "—"}
           </dd>
+
+          {projected && info.bounds && (
+            <>
+              <dt>Native extent</dt>
+              <dd>
+                {info.bounds.map((value) => Math.round(value)).join(", ")}
+              </dd>
+            </>
+          )}
         </dl>
+
+        {projected && upload.bounds && (
+          <p className="field-hint" style={{ lineHeight: 1.5 }}>
+            {info.crs} is a projected CRS, so its native extent is in
+            metres. The footprint above has been reprojected to
+            longitude/latitude for the map.
+          </p>
+        )}
 
         {!upload.bounds && (
           <p className="inline-error">
-            The bounds are reported in {info.crs ?? "the file's own CRS"},
-            not longitude/latitude, so the footprint cannot be drawn on the
-            map. The analysis itself is unaffected — it runs against the
-            uploaded pixels.
+            {info.crs
+              ? `This raster's extent could not be converted from ${info.crs} ` +
+                "to longitude/latitude, so its footprint cannot be drawn."
+              : "This raster carries no coordinate reference system, so " +
+                "there is no way to know where on Earth it is."}{" "}
+            The analysis still runs against the uploaded pixels — only the
+            map placement is missing.
           </p>
         )}
 
